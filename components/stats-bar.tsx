@@ -82,7 +82,7 @@ export default function StatsBar({
           <span className="absolute w-2 h-2 rounded-full bg-cyan-400 animate-ring-expand" />
         </span>
         <h1 className="text-[12px] font-bold tracking-[0.2em] uppercase text-foreground/80 font-mono">
-          WorldView
+          Satzon
         </h1>
       </div>
 

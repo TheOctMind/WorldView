@@ -166,7 +166,7 @@ export default function LandingPage() {
         {/* Top branding */}
         <div className="absolute top-4 left-4 sm:top-6 sm:left-12 z-10 flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" style={{ boxShadow: "0 0 6px oklch(0.7 0.15 195 / 60%)" }} />
-          <span className="text-[11px] font-mono font-bold tracking-[0.2em] text-white/40">WORLDVIEW</span>
+          <span className="text-[11px] font-mono font-bold tracking-[0.2em] text-white/40">SATZON</span>
         </div>
 
         {/* Content — left-aligned */}
@@ -182,7 +182,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-sm sm:text-base text-white/40 max-w-lg mb-6 sm:mb-10 leading-relaxed">
-            WorldView fuses thermal imaging from 5 satellites with seismic sensors,
+            Satzon fuses thermal imaging from 5 satellites with seismic sensors,
             OSINT feeds, and disaster alerts into a single live dashboard.
             Rocket launches, wildfires, earthquakes — as they happen.
           </p>
@@ -244,7 +244,7 @@ export default function LandingPage() {
         <div ref={scenario.ref} className="max-w-5xl mx-auto">
           <p className="text-[11px] font-mono text-white/25 tracking-wider uppercase mb-4">Real scenario</p>
           <h2 className="text-xl sm:text-3xl font-sans font-bold text-white/90 mb-3">
-            How WorldView detects a launch in under 8 seconds
+            How Satzon detects a launch in under 8 seconds
           </h2>
           <p className="text-sm text-white/35 max-w-2xl mb-12">
             A satellite passes over the Middle East. Multiple sensors flag an extreme thermal reading.
@@ -300,7 +300,7 @@ export default function LandingPage() {
                 <span className="w-2 h-2 rounded-full bg-red-500/60" />
                 <span className="w-2 h-2 rounded-full bg-yellow-500/40" />
                 <span className="w-2 h-2 rounded-full bg-green-500/40" />
-                <span className="text-[10px] font-mono text-white/20 ml-2">worldview — event log</span>
+                <span className="text-[10px] font-mono text-white/20 ml-2">satzon — event log</span>
               </div>
               <div className="flex-1 space-y-1.5 font-mono text-[10px] sm:text-[11px] leading-relaxed overflow-hidden">
                 {SCENARIO_LINES.slice(0, logLines).map((line, i) => (
@@ -399,7 +399,7 @@ export default function LandingPage() {
             <div className="flex items-center justify-between px-4 py-2.5 bg-[#0c0e14] border-b border-white/[0.06]">
               <div className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" style={{ boxShadow: "0 0 6px oklch(0.7 0.15 195 / 60%)" }} />
-                <span className="text-[10px] font-mono font-bold tracking-wider text-white/50">WORLDVIEW</span>
+                <span className="text-[10px] font-mono font-bold tracking-wider text-white/50">SATZON</span>
               </div>
               <div className="flex items-center gap-5">
                 {[
@@ -554,7 +554,7 @@ export default function LandingPage() {
           )}
 
           <div className="mt-16 pt-6 border-t border-white/[0.04] text-[11px] text-white/15 space-y-1">
-            <p>WorldView — satellite intelligence platform</p>
+            <p>Satzon — satellite intelligence platform</p>
             <p>Built for defense analysts, wildfire response, and OSINT researchers.</p>
           </div>
         </div>

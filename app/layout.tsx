@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "WorldView - Global Monitoring Dashboard",
+  title: "Satzon - Global Monitoring Dashboard",
   description: "Real-time global monitoring dashboard — thermal anomalies, seismic events, OSINT, and disaster alerts from satellite data",
 }
 

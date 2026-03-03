@@ -8,7 +8,7 @@ import { join } from "path"
 let cachedResult: { data: any; timestamp: number } | null = null
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 const FILE_CACHE_TTL = 15 * 60 * 1000 // 15 minutes for disk cache
-const FILE_CACHE_PATH = join(tmpdir(), "worldview-firms-cache.json")
+const FILE_CACHE_PATH = join(tmpdir(), "satzon-firms-cache.json")
 
 // Try to load from disk cache on cold start
 function loadDiskCache(): { data: any; timestamp: number } | null {

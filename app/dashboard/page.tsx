@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Dashboard from "@/components/dashboard"
 
-const LS_KEY = "worldview_access_key"
+const LS_KEY = "satzon_access_key"
 
 export default function DashboardPage() {
   const [authorized, setAuthorized] = useState(false)
@@ -81,7 +81,7 @@ export default function DashboardPage() {
       <div className="max-w-sm w-full">
         <div className="flex items-center gap-2 mb-8">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" style={{ boxShadow: "0 0 6px oklch(0.7 0.15 195 / 60%)" }} />
-          <span className="text-[11px] font-mono font-bold tracking-[0.2em] text-white/40">WORLDVIEW</span>
+          <span className="text-[11px] font-mono font-bold tracking-[0.2em] text-white/40">SATZON</span>
         </div>
 
         <h1 className="text-xl font-sans font-bold text-white/90 mb-2">
