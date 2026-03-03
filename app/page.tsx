@@ -386,45 +386,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ WHO IS IT FOR ═══ */}
-      <section className="py-14 sm:py-24 px-4 sm:px-12 border-t border-white/[0.04]">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-[11px] font-mono text-white/25 tracking-wider uppercase mb-4">Built for</p>
-          <h2 className="text-xl sm:text-3xl font-sans font-bold text-white/90 mb-10 sm:mb-14">
-            Who uses Satzon?
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
-            {[
-              {
-                icon: "🛰",
-                title: "Defense & Intelligence",
-                desc: "Monitor launch activity, track thermal signatures near sensitive sites, and correlate satellite data with ground-level OSINT.",
-              },
-              {
-                icon: "🔥",
-                title: "Wildfire Response",
-                desc: "Detect new fires from NASA thermal data within seconds. Track fire spread in real time with VIIRS and MODIS hotspot feeds.",
-              },
-              {
-                icon: "📡",
-                title: "OSINT Analysts",
-                desc: "Cross-reference satellite thermal data with GDELT media monitoring and seismic activity to verify events on the ground.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6 hover:bg-white/[0.04] transition-colors"
-              >
-                <span className="text-2xl mb-3 block">{item.icon}</span>
-                <h3 className="text-sm font-semibold text-white/80 mb-2">{item.title}</h3>
-                <p className="text-[13px] text-white/35 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ═══ DASHBOARD DEMO — real satellite tiles ═══ */}
       <section className="py-14 sm:py-28 px-4 sm:px-12">
         <div ref={demo.ref} className={`max-w-5xl mx-auto transition-all duration-700 ${demo.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}>
