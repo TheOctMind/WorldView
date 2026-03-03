@@ -173,7 +173,7 @@ export default function LandingPage() {
         <div className="relative z-10 max-w-2xl">
           <div className="flex items-center gap-3 mb-4 sm:mb-8">
             <div className="w-2 h-2 rounded-full bg-red-500" style={{ animation: "glow-pulse 1.5s ease-in-out infinite", boxShadow: "0 0 8px #ef444490" }} />
-            <span className="text-[11px] font-mono tracking-wider text-red-400/80 uppercase">3 active alerts in view</span>
+            <span className="text-[11px] font-mono tracking-wider text-red-400/80 uppercase">Live global monitoring</span>
           </div>
 
           <h1 className="text-[22px] sm:text-5xl md:text-6xl font-sans font-bold leading-[1.15] tracking-tight text-white mb-4 sm:mb-5">
@@ -181,10 +181,11 @@ export default function LandingPage() {
             <span className="text-white/50">Before anyone else.</span>
           </h1>
 
-          <p className="text-[13px] sm:text-base text-white/40 max-w-lg mb-5 sm:mb-10 leading-relaxed">
-            Satzon fuses thermal imaging from 5 satellites with seismic sensors,
-            OSINT feeds, and disaster alerts into a single live dashboard.
-            Rocket launches, wildfires, earthquakes — as they happen.
+          <p className="text-[13px] sm:text-base text-white/45 max-w-lg mb-5 sm:mb-10 leading-relaxed">
+            Real-time satellite intelligence platform. Satzon monitors thermal anomalies,
+            earthquakes, OSINT signals, and disaster alerts from 5 NASA satellites —
+            all on one live dashboard. Detect rocket launches, wildfires,
+            and seismic events in under 8 seconds.
           </p>
 
           {!submitted ? (
@@ -212,7 +213,7 @@ export default function LandingPage() {
           )}
 
           <p className="mt-4 text-[11px] text-white/20">
-            Used by defense researchers, wildfire response teams, and OSINT analysts.
+            Trusted by defense researchers, wildfire response teams, and OSINT analysts worldwide.
           </p>
         </div>
       </section>
@@ -379,6 +380,45 @@ export default function LandingPage() {
                   <span className="text-base sm:text-lg font-mono font-bold text-white/70 tabular-nums">{item.stat}</span>
                   <span className="text-[10px] text-white/20 sm:block font-mono">{item.statLabel}</span>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ WHO IS IT FOR ═══ */}
+      <section className="py-14 sm:py-24 px-4 sm:px-12 border-t border-white/[0.04]">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-[11px] font-mono text-white/25 tracking-wider uppercase mb-4">Built for</p>
+          <h2 className="text-xl sm:text-3xl font-sans font-bold text-white/90 mb-10 sm:mb-14">
+            Who uses Satzon?
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+            {[
+              {
+                icon: "🛰",
+                title: "Defense & Intelligence",
+                desc: "Monitor launch activity, track thermal signatures near sensitive sites, and correlate satellite data with ground-level OSINT.",
+              },
+              {
+                icon: "🔥",
+                title: "Wildfire Response",
+                desc: "Detect new fires from NASA thermal data within seconds. Track fire spread in real time with VIIRS and MODIS hotspot feeds.",
+              },
+              {
+                icon: "📡",
+                title: "OSINT Analysts",
+                desc: "Cross-reference satellite thermal data with GDELT media monitoring and seismic activity to verify events on the ground.",
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6 hover:bg-white/[0.04] transition-colors"
+              >
+                <span className="text-2xl mb-3 block">{item.icon}</span>
+                <h3 className="text-sm font-semibold text-white/80 mb-2">{item.title}</h3>
+                <p className="text-[13px] text-white/35 leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
