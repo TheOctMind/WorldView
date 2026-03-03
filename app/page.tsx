@@ -212,8 +212,8 @@ export default function LandingPage() {
             </div>
           )}
 
-          <p className="mt-4 text-[11px] text-white/20">
-            Trusted by defense researchers, wildfire response teams, and OSINT analysts worldwide.
+          <p className="mt-4 text-[11px] text-green-400/50 font-mono">
+            ⚡ First 1,000 signups get free access
           </p>
         </div>
       </section>
@@ -562,11 +562,11 @@ export default function LandingPage() {
       <section className="py-14 sm:py-28 px-4 sm:px-12 border-t border-white/[0.04]">
         <div ref={bottom.ref} className={`max-w-xl mx-auto text-center transition-all duration-700 ${bottom.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <h2 className="text-xl sm:text-3xl font-sans font-bold text-white/90 mb-3">
-            Get access before public launch
+            Free access for the first 1,000
           </h2>
           <p className="text-sm text-white/35 mb-8">
-            We&apos;re onboarding teams in batches. Drop your email and we&apos;ll
-            reach out when your spot opens.
+            We&apos;re opening Satzon to the first 1,000 users for free.
+            Drop your email and we&apos;ll send your access link.
           </p>
 
           {!submitted ? (
