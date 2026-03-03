@@ -188,18 +188,18 @@ export default function LandingPage() {
           </p>
 
           {!submitted ? (
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 max-w-sm">
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 w-full sm:max-w-sm">
               <input
                 type="email"
                 placeholder="you@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 h-11 sm:h-10 px-4 rounded-lg sm:rounded bg-white/[0.08] border border-white/15 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 focus:bg-white/[0.1] transition-all"
+                className="w-full sm:flex-1 h-12 sm:h-10 px-4 rounded-lg sm:rounded bg-white/[0.08] border border-white/15 text-[15px] sm:text-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 focus:bg-white/[0.1] transition-all"
               />
               <button
                 type="submit"
                 disabled={submitting}
-                className="h-11 sm:h-10 px-5 rounded-lg sm:rounded bg-white text-black text-sm font-semibold hover:bg-white/90 transition-colors cursor-pointer whitespace-nowrap disabled:opacity-50"
+                className="w-full sm:w-auto h-12 sm:h-10 px-5 rounded-lg sm:rounded bg-white text-black text-[15px] sm:text-sm font-semibold hover:bg-white/90 transition-colors cursor-pointer whitespace-nowrap disabled:opacity-50"
               >
                 {submitting ? "Joining..." : "Get early access"}
               </button>
@@ -530,18 +530,18 @@ export default function LandingPage() {
           </p>
 
           {!submitted ? (
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 max-w-sm mx-auto">
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 w-full sm:max-w-sm mx-auto">
               <input
                 type="email"
                 placeholder="you@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 h-11 sm:h-10 px-4 rounded-lg sm:rounded bg-white/[0.08] border border-white/15 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 focus:bg-white/[0.1] transition-all"
+                className="w-full sm:flex-1 h-12 sm:h-10 px-4 rounded-lg sm:rounded bg-white/[0.08] border border-white/15 text-[15px] sm:text-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 focus:bg-white/[0.1] transition-all"
               />
               <button
                 type="submit"
                 disabled={submitting}
-                className="h-11 sm:h-10 px-5 rounded-lg sm:rounded bg-white text-black text-sm font-semibold hover:bg-white/90 transition-colors cursor-pointer whitespace-nowrap disabled:opacity-50"
+                className="w-full sm:w-auto h-12 sm:h-10 px-5 rounded-lg sm:rounded bg-white text-black text-[15px] sm:text-sm font-semibold hover:bg-white/90 transition-colors cursor-pointer whitespace-nowrap disabled:opacity-50"
               >
                 {submitting ? "Joining..." : "Join waitlist"}
               </button>
