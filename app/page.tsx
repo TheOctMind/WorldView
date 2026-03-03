@@ -82,7 +82,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[#080a0f] text-foreground overflow-x-hidden">
 
       {/* ═══ HERO — real satellite tile mosaic background ═══ */}
-      <section className="relative min-h-[90vh] sm:min-h-screen flex items-end pb-8 sm:pb-24 px-4 sm:px-12 overflow-hidden">
+      <section className="relative min-h-[80vh] sm:min-h-screen flex items-end pb-6 sm:pb-24 px-4 sm:px-12 overflow-hidden">
         {/* Satellite tile mosaic background */}
         <div className="absolute inset-0" aria-hidden>
           {/* Grid of ESRI satellite tiles — zoom 3, Middle East / Mediterranean region */}
@@ -176,12 +176,12 @@ export default function LandingPage() {
             <span className="text-[11px] font-mono tracking-wider text-red-400/80 uppercase">3 active alerts in view</span>
           </div>
 
-          <h1 className="text-2xl sm:text-5xl md:text-6xl font-sans font-bold leading-[1.15] tracking-tight text-white mb-5">
+          <h1 className="text-[22px] sm:text-5xl md:text-6xl font-sans font-bold leading-[1.15] tracking-tight text-white mb-4 sm:mb-5">
             See what satellites see.<br />
             <span className="text-white/50">Before anyone else.</span>
           </h1>
 
-          <p className="text-sm sm:text-base text-white/40 max-w-lg mb-6 sm:mb-10 leading-relaxed">
+          <p className="text-[13px] sm:text-base text-white/40 max-w-lg mb-5 sm:mb-10 leading-relaxed">
             Satzon fuses thermal imaging from 5 satellites with seismic sensors,
             OSINT feeds, and disaster alerts into a single live dashboard.
             Rocket launches, wildfires, earthquakes — as they happen.
