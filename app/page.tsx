@@ -82,7 +82,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[#080a0f] text-foreground overflow-x-hidden">
 
       {/* ═══ HERO — real satellite tile mosaic background ═══ */}
-      <section className="relative min-h-screen flex items-end pb-12 sm:pb-24 px-4 sm:px-12 overflow-hidden">
+      <section className="relative min-h-[90vh] sm:min-h-screen flex items-end pb-8 sm:pb-24 px-4 sm:px-12 overflow-hidden">
         {/* Satellite tile mosaic background */}
         <div className="absolute inset-0" aria-hidden>
           {/* Grid of ESRI satellite tiles — zoom 3, Middle East / Mediterranean region */}
@@ -124,7 +124,7 @@ export default function LandingPage() {
         </div>
 
         {/* Detection markers overlaid on satellite imagery */}
-        <div className="absolute inset-0 pointer-events-none" aria-hidden>
+        <div className="absolute inset-0 pointer-events-none hidden sm:block" aria-hidden>
           {[
             { x: "62%", y: "22%", c: "#ef4444", label: "SUSPECT", pulse: true },
             { x: "45%", y: "38%", c: "#ff8c00", label: "", pulse: false },
@@ -171,7 +171,7 @@ export default function LandingPage() {
 
         {/* Content — left-aligned */}
         <div className="relative z-10 max-w-2xl">
-          <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center gap-3 mb-4 sm:mb-8">
             <div className="w-2 h-2 rounded-full bg-red-500" style={{ animation: "glow-pulse 1.5s ease-in-out infinite", boxShadow: "0 0 8px #ef444490" }} />
             <span className="text-[11px] font-mono tracking-wider text-red-400/80 uppercase">3 active alerts in view</span>
           </div>
@@ -181,7 +181,7 @@ export default function LandingPage() {
             <span className="text-white/50">Before anyone else.</span>
           </h1>
 
-          <p className="text-sm sm:text-base text-white/40 max-w-lg mb-10 leading-relaxed">
+          <p className="text-sm sm:text-base text-white/40 max-w-lg mb-6 sm:mb-10 leading-relaxed">
             WorldView fuses thermal imaging from 5 satellites with seismic sensors,
             OSINT feeds, and disaster alerts into a single live dashboard.
             Rocket launches, wildfires, earthquakes — as they happen.
