@@ -82,7 +82,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[#080a0f] text-foreground overflow-x-hidden">
 
       {/* ═══ HERO — real satellite tile mosaic background ═══ */}
-      <section className="relative min-h-screen flex items-end pb-16 sm:pb-24 px-6 sm:px-12 overflow-hidden">
+      <section className="relative min-h-screen flex items-end pb-12 sm:pb-24 px-4 sm:px-12 overflow-hidden">
         {/* Satellite tile mosaic background */}
         <div className="absolute inset-0" aria-hidden>
           {/* Grid of ESRI satellite tiles — zoom 3, Middle East / Mediterranean region */}
@@ -164,7 +164,7 @@ export default function LandingPage() {
         </div>
 
         {/* Top branding */}
-        <div className="absolute top-6 left-6 sm:left-12 z-10 flex items-center gap-2">
+        <div className="absolute top-4 left-4 sm:top-6 sm:left-12 z-10 flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" style={{ boxShadow: "0 0 6px oklch(0.7 0.15 195 / 60%)" }} />
           <span className="text-[11px] font-mono font-bold tracking-[0.2em] text-white/40">WORLDVIEW</span>
         </div>
@@ -176,7 +176,7 @@ export default function LandingPage() {
             <span className="text-[11px] font-mono tracking-wider text-red-400/80 uppercase">3 active alerts in view</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-sans font-bold leading-[1.15] tracking-tight text-white mb-5">
+          <h1 className="text-2xl sm:text-5xl md:text-6xl font-sans font-bold leading-[1.15] tracking-tight text-white mb-5">
             See what satellites see.<br />
             <span className="text-white/50">Before anyone else.</span>
           </h1>
@@ -188,7 +188,7 @@ export default function LandingPage() {
           </p>
 
           {!submitted ? (
-            <form onSubmit={handleSubmit} className="flex items-center gap-2 max-w-sm">
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 max-w-sm">
               <input
                 type="email"
                 placeholder="you@company.com"
@@ -240,10 +240,10 @@ export default function LandingPage() {
       </div>
 
       {/* ═══ SCENARIO: LAUNCH DETECTION ═══ */}
-      <section className="py-20 sm:py-32 px-6 sm:px-12">
+      <section className="py-14 sm:py-32 px-4 sm:px-12">
         <div ref={scenario.ref} className="max-w-5xl mx-auto">
           <p className="text-[11px] font-mono text-white/25 tracking-wider uppercase mb-4">Real scenario</p>
-          <h2 className="text-2xl sm:text-3xl font-sans font-bold text-white/90 mb-3">
+          <h2 className="text-xl sm:text-3xl font-sans font-bold text-white/90 mb-3">
             How WorldView detects a launch in under 8 seconds
           </h2>
           <p className="text-sm text-white/35 max-w-2xl mb-12">
@@ -255,7 +255,7 @@ export default function LandingPage() {
             {/* Left: satellite view with detection overlay — real tiles */}
             <div className="relative rounded-lg overflow-hidden border border-white/[0.08]">
               {/* 2x2 grid of ESRI tiles at zoom 7, Middle East area */}
-              <div className="grid grid-cols-2 grid-rows-2 h-72 sm:h-80">
+              <div className="grid grid-cols-2 grid-rows-2 h-56 sm:h-80">
                 <img src={TILE(7, 50, 78)} alt="" className="w-full h-full object-cover" />
                 <img src={TILE(7, 50, 79)} alt="" className="w-full h-full object-cover" />
                 <img src={TILE(7, 51, 78)} alt="" className="w-full h-full object-cover" />
@@ -295,14 +295,14 @@ export default function LandingPage() {
             </div>
 
             {/* Right: terminal log */}
-            <div className="rounded-lg border border-white/[0.08] bg-[#0c0e14] p-4 sm:p-5 flex flex-col">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/[0.06]">
+            <div className="rounded-lg border border-white/[0.08] bg-[#0c0e14] p-3 sm:p-5 flex flex-col min-h-[240px] sm:min-h-0">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4 pb-3 border-b border-white/[0.06]">
                 <span className="w-2 h-2 rounded-full bg-red-500/60" />
                 <span className="w-2 h-2 rounded-full bg-yellow-500/40" />
                 <span className="w-2 h-2 rounded-full bg-green-500/40" />
                 <span className="text-[10px] font-mono text-white/20 ml-2">worldview — event log</span>
               </div>
-              <div className="flex-1 space-y-1.5 font-mono text-[11px] leading-relaxed overflow-hidden">
+              <div className="flex-1 space-y-1.5 font-mono text-[10px] sm:text-[11px] leading-relaxed overflow-hidden">
                 {SCENARIO_LINES.slice(0, logLines).map((line, i) => (
                   <div key={i} className={`${line.color} transition-opacity duration-300`}>
                     <span className="text-white/20 mr-2">{line.time}</span>
@@ -319,9 +319,9 @@ export default function LandingPage() {
       </section>
 
       {/* ═══ DATA SOURCES ═══ */}
-      <section className="py-20 sm:py-28 px-6 sm:px-12 border-t border-white/[0.04]">
+      <section className="py-14 sm:py-28 px-4 sm:px-12 border-t border-white/[0.04]">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-sans font-bold text-white/90 mb-16">
+          <h2 className="text-xl sm:text-3xl font-sans font-bold text-white/90 mb-10 sm:mb-16">
             Five data sources. One screen.
           </h2>
 
@@ -375,9 +375,9 @@ export default function LandingPage() {
                 <p className="flex-1 text-sm text-white/40 group-hover:text-white/55 transition-colors">
                   {item.what}
                 </p>
-                <div className="sm:w-32 shrink-0 sm:text-right">
-                  <span className="text-lg font-mono font-bold text-white/70 tabular-nums">{item.stat}</span>
-                  <span className="text-[10px] text-white/20 block font-mono">{item.statLabel}</span>
+                <div className="flex sm:block items-center gap-2 sm:w-32 shrink-0 sm:text-right">
+                  <span className="text-base sm:text-lg font-mono font-bold text-white/70 tabular-nums">{item.stat}</span>
+                  <span className="text-[10px] text-white/20 sm:block font-mono">{item.statLabel}</span>
                 </div>
               </div>
             ))}
@@ -386,10 +386,10 @@ export default function LandingPage() {
       </section>
 
       {/* ═══ DASHBOARD DEMO — real satellite tiles ═══ */}
-      <section className="py-20 sm:py-28 px-6 sm:px-12">
+      <section className="py-14 sm:py-28 px-4 sm:px-12">
         <div ref={demo.ref} className={`max-w-5xl mx-auto transition-all duration-700 ${demo.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}>
           <p className="text-[11px] font-mono text-white/25 tracking-wider uppercase mb-4">The dashboard</p>
-          <h2 className="text-2xl sm:text-3xl font-sans font-bold text-white/90 mb-12">
+          <h2 className="text-xl sm:text-3xl font-sans font-bold text-white/90 mb-8 sm:mb-12">
             Everything on a 3D globe. Zoom in anywhere.
           </h2>
 
@@ -418,7 +418,7 @@ export default function LandingPage() {
             </div>
 
             {/* Main area — real satellite tile mosaic */}
-            <div className="relative h-80 sm:h-[420px] overflow-hidden">
+            <div className="relative h-56 sm:h-[420px] overflow-hidden">
               {/* 6x3 grid of tiles at zoom 2 — global view */}
               <div
                 className="absolute inset-0 grid"
@@ -483,8 +483,8 @@ export default function LandingPage() {
                 />
               ))}
 
-              {/* Selected event popup */}
-              <div className="absolute top-[34%] left-[48%] translate-x-2 -translate-y-full">
+              {/* Selected event popup — hidden on very small screens */}
+              <div className="hidden sm:block absolute top-[34%] left-[48%] translate-x-2 -translate-y-full">
                 <div className="bg-black/80 backdrop-blur border border-red-500/20 rounded-md px-3 py-2 text-[9px] font-mono shadow-lg shadow-red-500/5 whitespace-nowrap">
                   <p className="text-red-400 font-bold mb-0.5">LAUNCH SUSPECT</p>
                   <p className="text-white/40">34.06°N, 44.32°E · 2,847K</p>
@@ -493,16 +493,16 @@ export default function LandingPage() {
               </div>
 
               {/* Left control panel */}
-              <div className="absolute top-3 left-3 w-36 sm:w-44 bg-black/60 backdrop-blur border border-white/[0.06] rounded-lg p-3 space-y-2">
-                <div className="text-[9px] font-mono text-cyan-400/60 tracking-wider">LAUNCH MONITOR</div>
-                <div className="h-5 rounded bg-red-500/10 border border-red-500/10 flex items-center px-2">
-                  <span className="text-[9px] font-mono text-red-400/70">75 suspect events</span>
+              <div className="absolute top-2 left-2 sm:top-3 sm:left-3 w-28 sm:w-44 bg-black/60 backdrop-blur border border-white/[0.06] rounded-lg p-2 sm:p-3 space-y-1.5 sm:space-y-2">
+                <div className="text-[8px] sm:text-[9px] font-mono text-cyan-400/60 tracking-wider">LAUNCH MONITOR</div>
+                <div className="h-4 sm:h-5 rounded bg-red-500/10 border border-red-500/10 flex items-center px-1.5 sm:px-2">
+                  <span className="text-[8px] sm:text-[9px] font-mono text-red-400/70">75 suspect events</span>
                 </div>
-                <div className="h-5 rounded bg-orange-500/10 border border-orange-500/10 flex items-center px-2">
-                  <span className="text-[9px] font-mono text-orange-400/60">13,172 high</span>
+                <div className="h-4 sm:h-5 rounded bg-orange-500/10 border border-orange-500/10 flex items-center px-1.5 sm:px-2">
+                  <span className="text-[8px] sm:text-[9px] font-mono text-orange-400/60">13,172 high</span>
                 </div>
-                <div className="text-[9px] font-mono text-cyan-400/60 tracking-wider mt-1">EVENT LOG</div>
-                <div className="space-y-1">
+                <div className="hidden sm:block text-[9px] font-mono text-cyan-400/60 tracking-wider mt-1">EVENT LOG</div>
+                <div className="hidden sm:block space-y-1">
                   {["HIGH · 14 MW · Dominican Rep.", "FIRE · 19 MW · Haiti", "SUSPECT · 342 MW · Iraq"].map((t, i) => (
                     <div key={i} className="text-[8px] font-mono text-white/25 truncate">{t}</div>
                   ))}
@@ -519,9 +519,9 @@ export default function LandingPage() {
       </section>
 
       {/* ═══ BOTTOM CTA ═══ */}
-      <section className="py-20 sm:py-28 px-6 sm:px-12 border-t border-white/[0.04]">
+      <section className="py-14 sm:py-28 px-4 sm:px-12 border-t border-white/[0.04]">
         <div ref={bottom.ref} className={`max-w-xl mx-auto text-center transition-all duration-700 ${bottom.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <h2 className="text-2xl sm:text-3xl font-sans font-bold text-white/90 mb-3">
+          <h2 className="text-xl sm:text-3xl font-sans font-bold text-white/90 mb-3">
             Get access before public launch
           </h2>
           <p className="text-sm text-white/35 mb-8">
@@ -530,7 +530,7 @@ export default function LandingPage() {
           </p>
 
           {!submitted ? (
-            <form onSubmit={handleSubmit} className="flex items-center gap-2 max-w-sm mx-auto">
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 max-w-sm mx-auto">
               <input
                 type="email"
                 placeholder="you@company.com"
