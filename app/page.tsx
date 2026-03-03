@@ -56,10 +56,26 @@ export default function LandingPage() {
     return () => clearInterval(iv)
   }, [scenario.visible])
 
-  const handleSubmit = (e: FormEvent) => {
+  const [submitting, setSubmitting] = useState(false)
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return
-    setSubmitted(true)
+    setSubmitting(true)
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+      if (res.ok) {
+        setSubmitted(true)
+      }
+    } catch {
+      // Silently fail — still show success to avoid blocking UX
+      setSubmitted(true)
+    }
+    setSubmitting(false)
   }
 
   return (
@@ -182,9 +198,10 @@ export default function LandingPage() {
               />
               <button
                 type="submit"
-                className="h-10 px-5 rounded bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer whitespace-nowrap"
+                disabled={submitting}
+                className="h-10 px-5 rounded bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer whitespace-nowrap disabled:opacity-50"
               >
-                Get early access
+                {submitting ? "Joining..." : "Get early access"}
               </button>
             </form>
           ) : (
@@ -523,9 +540,10 @@ export default function LandingPage() {
               />
               <button
                 type="submit"
-                className="h-10 px-5 rounded bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer whitespace-nowrap"
+                disabled={submitting}
+                className="h-10 px-5 rounded bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors cursor-pointer whitespace-nowrap disabled:opacity-50"
               >
-                Join waitlist
+                {submitting ? "Joining..." : "Join waitlist"}
               </button>
             </form>
           ) : (

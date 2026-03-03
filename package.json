@@ -10,6 +10,7 @@
     "postinstall": "node scripts/copy-cesium.js"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "cesium": "^1.139.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
