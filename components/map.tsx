@@ -665,7 +665,7 @@ export default function WorldMap({
     lastFocusRef.current = key
 
     viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(focusTarget.lng, focusTarget.lat, 50000),
+      destination: Cesium.Cartesian3.fromDegrees(focusTarget.lng, focusTarget.lat, 15000),
       orientation: {
         heading: Cesium.Math.toRadians(0),
         pitch: Cesium.Math.toRadians(-90),
