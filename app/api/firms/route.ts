@@ -121,7 +121,7 @@ function parseNIFC(data: { features?: { attributes: Record<string, unknown> }[] 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const source = searchParams.get("source") || "all"
-  const days = searchParams.get("days") || "1"
+  const days = searchParams.get("days") || "2"
   const region = searchParams.get("region") || "world"
 
   const mapKey = process.env.FIRMS_MAP_KEY
