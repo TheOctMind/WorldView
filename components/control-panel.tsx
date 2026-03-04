@@ -185,9 +185,8 @@ export default function ControlPanel({
 
       if (hasCountry && hasDistance && cameraCenter) {
         const country = getItemCountry(item).toLowerCase()
-        if (country.includes(countryLower)) return true
         const dist = haversineKm(cameraCenter.lat, cameraCenter.lng, pos.lat, pos.lng)
-        return dist <= maxDistanceKm!
+        return country.includes(countryLower) && dist <= maxDistanceKm!
       }
 
       if (hasCountry) {
