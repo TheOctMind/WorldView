@@ -1,16 +1,25 @@
-// Query Element84 Earth Search STAC API for the latest Sentinel-2 satellite pass date
-// Free, no auth required — returns actual acquisition timestamps from Sentinel-2
+// Query Element84 Earth Search STAC API for satellite passes AFTER an event
+// Free, no auth required — returns actual Sentinel-2 acquisition timestamps
 
 const imageryDateCache = new Map<string, { date: string | null; fetchedAt: number }>()
 const CACHE_TTL = 10 * 60 * 1000 // 10 minutes
 
-function cacheKey(lat: number, lng: number): string {
-  // Round to 1 decimal (~11km) to group nearby queries
-  return `${lat.toFixed(1)},${lng.toFixed(1)}`
+function cacheKey(lat: number, lng: number, eventTs: number): string {
+  // Round coords to 1 decimal (~11km), event date to day
+  const day = new Date(eventTs).toISOString().slice(0, 10)
+  return `${lat.toFixed(1)},${lng.toFixed(1)},${day}`
 }
 
-export async function getImageryDate(lat: number, lng: number): Promise<string | null> {
-  const key = cacheKey(lat, lng)
+/**
+ * Find the first Sentinel-2 pass AFTER the event timestamp for this location.
+ * This tells us: "is there a satellite image available that shows the aftermath?"
+ */
+export async function getImageryDate(
+  lat: number,
+  lng: number,
+  eventTimestamp: number
+): Promise<string | null> {
+  const key = cacheKey(lat, lng, eventTimestamp)
 
   const cached = imageryDateCache.get(key)
   if (cached && Date.now() - cached.fetchedAt < CACHE_TTL) {
@@ -18,11 +27,13 @@ export async function getImageryDate(lat: number, lng: number): Promise<string |
   }
 
   try {
-    // Search Element84 Earth Search STAC for the most recent Sentinel-2 image
-    // covering this location with low cloud cover
+    const eventDate = new Date(eventTimestamp).toISOString()
+    const now = new Date().toISOString()
+
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 10000)
 
+    // Search for Sentinel-2 images AFTER the event with low cloud cover
     const response = await fetch("https://earth-search.aws.element84.com/v1/search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -31,9 +42,10 @@ export async function getImageryDate(lat: number, lng: number): Promise<string |
         collections: ["sentinel-2-l2a"],
         intersects: {
           type: "Point",
-          coordinates: [lng, lat], // GeoJSON: [lng, lat]
+          coordinates: [lng, lat],
         },
-        sortby: [{ field: "properties.datetime", direction: "desc" }],
+        datetime: `${eventDate}/${now}`,
+        sortby: [{ field: "properties.datetime", direction: "asc" }],
         limit: 1,
         query: {
           "eo:cloud_cover": { lt: 30 },
@@ -55,7 +67,7 @@ export async function getImageryDate(lat: number, lng: number): Promise<string |
       const feature = data.features[0]
       const datetime = feature.properties?.datetime
       if (datetime) {
-        srcDate = datetime.slice(0, 10) // "2026-03-04T08:21:34Z" → "2026-03-04"
+        srcDate = datetime.slice(0, 10)
       }
     }
 
@@ -68,31 +80,35 @@ export async function getImageryDate(lat: number, lng: number): Promise<string |
 }
 
 /**
- * Compare event time with latest satellite pass date and return freshness status
+ * Check if there's a satellite image available AFTER the event
  */
 export function getImageryFreshness(
   eventTimestamp: number,
   imageryDateStr: string | null
-): { status: "fresh" | "outdated" | "unknown"; label: string; daysOld?: number } {
+): { status: "fresh" | "outdated" | "unknown"; label: string; daysAgo?: number } {
   if (!imageryDateStr) {
-    return { status: "unknown", label: "NO SAT DATA" }
+    return { status: "unknown", label: "NO POST-EVENT IMAGE" }
   }
 
   const imageryDate = Date.parse(imageryDateStr)
   if (isNaN(imageryDate)) {
-    return { status: "unknown", label: "NO SAT DATA" }
+    return { status: "unknown", label: "NO POST-EVENT IMAGE" }
   }
 
-  const eventDate = eventTimestamp || Date.now()
-  const diffMs = eventDate - imageryDate
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+  // How many days after the event did the satellite pass?
+  const diffMs = imageryDate - eventTimestamp
+  const daysAfter = Math.floor(diffMs / (1000 * 60 * 60 * 24))
 
-  if (diffDays <= 5) {
-    return { status: "fresh", label: "RECENT PASS", daysOld: diffDays }
+  // How old is the satellite image from now?
+  const ageMs = Date.now() - imageryDate
+  const daysAgo = Math.floor(ageMs / (1000 * 60 * 60 * 24))
+
+  if (daysAfter <= 1) {
+    return { status: "fresh", label: "IMAGE AVAILABLE", daysAgo }
   }
-  if (diffDays <= 30) {
-    return { status: "fresh", label: "SAT COVERAGE OK", daysOld: diffDays }
+  if (daysAfter <= 5) {
+    return { status: "fresh", label: "IMAGE AVAILABLE", daysAgo }
   }
 
-  return { status: "outdated", label: "OLD COVERAGE", daysOld: diffDays }
+  return { status: "outdated", label: "WAITING FOR PASS", daysAgo }
 }

@@ -107,7 +107,7 @@ export default function EventDetailBar(props: EventDetailBarProps) {
     setLoadingImagery(true)
     setImageryDate(null)
 
-    getImageryDate(lat, lng)
+    getImageryDate(lat, lng, selected.timestamp)
       .then((date) => setImageryDate(date))
       .finally(() => setLoadingImagery(false))
   }, [
@@ -115,6 +115,7 @@ export default function EventDetailBar(props: EventDetailBarProps) {
     selected?.type,
     selected?.data.latitude,
     selected?.data.longitude,
+    selected?.timestamp,
   ])
 
   if (!selected) return null
@@ -193,9 +194,9 @@ export default function EventDetailBar(props: EventDetailBarProps) {
             >
               {loadingImagery ? "CHECKING..." : freshness.label}
             </span>
-            {freshness.daysOld !== undefined && !loadingImagery && (
+            {freshness.daysAgo !== undefined && !loadingImagery && (
               <span className="text-[9px] font-mono text-foreground/25">
-                ({freshness.daysOld}d)
+                ({freshness.daysAgo === 0 ? "today" : `${freshness.daysAgo}d ago`})
               </span>
             )}
           </div>
