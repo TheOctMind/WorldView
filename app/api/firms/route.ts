@@ -5,18 +5,28 @@ import { tmpdir } from "os"
 import { join } from "path"
 
 // In-memory cache to avoid re-fetching 15MB+ of CSV on every request
-let cachedResult: { data: any; timestamp: number } | null = null
+// Keyed by query params so different requests don't share stale data
+const cache = new Map<string, { data: any; timestamp: number }>()
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 const FILE_CACHE_TTL = 15 * 60 * 1000 // 15 minutes for disk cache
-const FILE_CACHE_PATH = join(tmpdir(), "satzon-firms-cache.json")
+
+function cacheKey(source: string, days: string, region: string): string {
+  return `${source}:${days}:${region}`
+}
+
+function fileCachePath(key: string): string {
+  // Sanitize key for filename
+  return join(tmpdir(), `satzon-firms-cache-${key.replace(/[^a-z0-9]/gi, "_")}.json`)
+}
 
 // Try to load from disk cache on cold start
-function loadDiskCache(): { data: any; timestamp: number } | null {
+function loadDiskCache(key: string): { data: any; timestamp: number } | null {
   try {
-    if (!existsSync(FILE_CACHE_PATH)) return null
-    const stat = statSync(FILE_CACHE_PATH)
+    const path = fileCachePath(key)
+    if (!existsSync(path)) return null
+    const stat = statSync(path)
     if (Date.now() - stat.mtimeMs > FILE_CACHE_TTL) return null
-    const raw = readFileSync(FILE_CACHE_PATH, "utf-8")
+    const raw = readFileSync(path, "utf-8")
     const parsed = JSON.parse(raw)
     return { data: parsed, timestamp: stat.mtimeMs }
   } catch {
@@ -24,9 +34,9 @@ function loadDiskCache(): { data: any; timestamp: number } | null {
   }
 }
 
-function saveDiskCache(data: any): void {
+function saveDiskCache(key: string, data: any): void {
   try {
-    writeFileSync(FILE_CACHE_PATH, JSON.stringify(data))
+    writeFileSync(fileCachePath(key), JSON.stringify(data))
   } catch {
     // Disk write failure is non-critical
   }
@@ -41,7 +51,11 @@ const ALL_SOURCES = [
 ]
 
 // NIFC ArcGIS - free backup source, no API key needed
-const NIFC_URL = "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/Satellite_VIIRS_Thermal_Hotspots_and_Fire_Activity/FeatureServer/0/query?where=1%3D1&outFields=latitude,longitude,bright_ti4,bright_ti5,confidence,acq_date,acq_time,satellite,frp,daynight,scan,track&outSR=4326&f=json&resultRecordCount=16000"
+function nifcUrl(days: number): string {
+  const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+  const where = encodeURIComponent(`acq_date >= '${since}'`)
+  return `https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/Satellite_VIIRS_Thermal_Hotspots_and_Fire_Activity/FeatureServer/0/query?where=${where}&outFields=latitude,longitude,bright_ti4,bright_ti5,confidence,acq_date,acq_time,satellite,frp,daynight,scan,track&outSR=4326&f=json&resultRecordCount=16000`
+}
 
 function classifyHotspot(h: FirmsHotspot): Classification {
   const isHighConf = h.confidence.toLowerCase() === "high" || parseInt(h.confidence) > 80
@@ -72,7 +86,7 @@ function deduplicateHotspots(hotspots: FirmsHotspot[]): FirmsHotspot[] {
   const seen = new Map<string, FirmsHotspot>()
 
   for (const h of hotspots) {
-    const key = `${h.latitude.toFixed(3)},${h.longitude.toFixed(3)},${h.acq_date},${h.acq_time}`
+    const key = `${h.latitude.toFixed(4)},${h.longitude.toFixed(4)},${h.acq_date},${h.acq_time}`
     const existing = seen.get(key)
     if (!existing || h.frp > existing.frp) {
       seen.set(key, h)
@@ -129,7 +143,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "FIRMS_MAP_KEY not configured" }, { status: 500 })
   }
 
+  const ck = cacheKey(source, days, region)
+
   // Return cached result if fresh (avoids re-downloading 15MB+ of CSV)
+  const cachedResult = cache.get(ck)
   if (cachedResult && Date.now() - cachedResult.timestamp < CACHE_TTL) {
     return NextResponse.json(cachedResult.data, {
       headers: {
@@ -141,9 +158,9 @@ export async function GET(request: NextRequest) {
 
   // Fallback: try disk cache on cold start (survives server restarts)
   if (!cachedResult) {
-    const diskData = loadDiskCache()
+    const diskData = loadDiskCache(ck)
     if (diskData) {
-      cachedResult = diskData
+      cache.set(ck, diskData)
       return NextResponse.json(diskData.data, {
         headers: {
           "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
@@ -177,7 +194,7 @@ export async function GET(request: NextRequest) {
       return { source: src, hotspots: parseFireCSV(csv, src) }
     })
 
-    const nifcFetch = fetch(NIFC_URL, { cache: "no-store" })
+    const nifcFetch = fetch(nifcUrl(parseInt(days)), { cache: "no-store" })
       .then((r) => r.ok ? r.json() : null)
       .then((data) => data ? parseNIFC(data) : [])
       .catch(() => [] as FirmsHotspot[])
@@ -242,8 +259,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Cache in memory for 5 min + persist to disk for cold starts
-    cachedResult = { data: responseData, timestamp: Date.now() }
-    saveDiskCache(responseData)
+    cache.set(ck, { data: responseData, timestamp: Date.now() })
+    saveDiskCache(ck, responseData)
 
     return NextResponse.json(responseData, {
       headers: {
