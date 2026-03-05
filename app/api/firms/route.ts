@@ -178,7 +178,7 @@ export async function GET(request: NextRequest) {
     const firmsFetches = sources.map(async (src) => {
       const url = `https://firms.modaps.eosdis.nasa.gov/api/area/csv/${mapKey}/${src}/${area}/${days}`
       const controller = new AbortController()
-      const timeout = setTimeout(() => controller.abort(), 15000)
+      const timeout = setTimeout(() => controller.abort(), 30000)
       const response = await fetch(url, { cache: "no-store", signal: controller.signal })
       clearTimeout(timeout)
       if (!response.ok) {

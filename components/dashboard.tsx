@@ -57,7 +57,7 @@ export default function Dashboard() {
     let failedSources = 0
 
     // Fire all fetches in parallel but process each as it resolves
-    const firmsP = fetch("/api/firms?source=all&days=1&region=world")
+    const firmsP = fetch("/api/firms?source=all&days=2&region=world")
       .then(async (r) => {
         if (!r.ok) { failedSources++; return }
         const data = await r.json()
