@@ -289,7 +289,7 @@ export default function ControlPanel({
               className="w-full bg-white/[0.03] border border-cyan-500/[0.10] rounded-md px-2.5 py-1.5 text-[11px] font-mono text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-cyan-500/30 focus:shadow-[0_0_12px_oklch(0.7_0.15_195/15%)] transition-all duration-300"
               min={0}
             />
-            <span className="text-[9px] font-mono text-muted-foreground/30 flex-shrink-0">from center</span>
+            <span className="text-[9px] font-mono text-foreground/30 flex-shrink-0">km radius</span>
           </div>
           {(countryFilter || maxDistanceKm) && (
             <button
@@ -313,6 +313,7 @@ export default function ControlPanel({
           onSelectSeismic={onSelectSeismic}
           onSelectGdelt={onSelectGdelt}
           onSelectGdacs={onSelectGdacs}
+          cameraCenter={cameraCenter}
         />
       </div>
     </div>
@@ -331,7 +332,7 @@ function LegendItem({ color, label, glow, square }: { color: string; label: stri
   )
 }
 
-const ITEM_HEIGHT = 48
+const ITEM_HEIGHT = 58
 const CONTAINER_HEIGHT = 380
 const BUFFER = 10
 
@@ -341,12 +342,14 @@ function VirtualEventLog({
   onSelectSeismic,
   onSelectGdelt,
   onSelectGdacs,
+  cameraCenter,
 }: {
   items: EventLogItem[]
   onSelectHotspot: (h: FirmsHotspot) => void
   onSelectSeismic: (e: SeismicEvent & { suspicious: boolean }) => void
   onSelectGdelt: (e: GdeltEvent) => void
   onSelectGdacs: (a: GdacsAlert) => void
+  cameraCenter?: { lat: number; lng: number }
 }) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [scrollTop, setScrollTop] = useState(0)
@@ -385,6 +388,7 @@ function VirtualEventLog({
                   onSelectSeismic={onSelectSeismic}
                   onSelectGdelt={onSelectGdelt}
                   onSelectGdacs={onSelectGdacs}
+                  cameraCenter={cameraCenter}
                 />
               )
             })}
@@ -424,18 +428,26 @@ function getGlowHex(item: EventLogItem): string {
   return "#f59e0b"
 }
 
+function formatDistance(km: number): string {
+  if (km < 1) return "<1 km"
+  if (km < 100) return `${km.toFixed(0)} km`
+  return `${(km / 1000).toFixed(1)}k km`
+}
+
 function EventLogRow({
   item,
   onSelectHotspot,
   onSelectSeismic,
   onSelectGdelt,
   onSelectGdacs,
+  cameraCenter,
 }: {
   item: EventLogItem
   onSelectHotspot: (h: FirmsHotspot) => void
   onSelectSeismic: (e: SeismicEvent & { suspicious: boolean }) => void
   onSelectGdelt: (e: GdeltEvent) => void
   onSelectGdacs: (a: GdacsAlert) => void
+  cameraCenter?: { lat: number; lng: number }
 }) {
   const accent = getAccentColor(item)
   const glowHex = getGlowHex(item)
@@ -449,54 +461,70 @@ function EventLogRow({
 
   let title = ""
   let badge = ""
-  let detail = ""
   let country = ""
+  let time = ""
+  let distLabel = ""
+  const pos = getItemLatLng(item)
+
+  // Calculate distance from camera center
+  if (cameraCenter) {
+    const dist = haversineKm(cameraCenter.lat, cameraCenter.lng, pos.lat, pos.lng)
+    distLabel = formatDistance(dist)
+  }
 
   if (item.type === "hotspot") {
     const h = item.data
     country = getCountryName(h.latitude, h.longitude)
     title = h.classification === "launch_suspect" ? "SUSPECT" : h.classification === "high_intensity" ? "HIGH" : "FIRE"
     badge = `${h.frp.toFixed(0)} MW`
-    detail = `${country ? `${country} · ` : ""}${h.latitude.toFixed(2)}, ${h.longitude.toFixed(2)} · ${timeAgo(item.timestamp)}`
+    time = timeAgo(item.timestamp)
   } else if (item.type === "seismic") {
     const e = item.data
     country = getCountryName(e.latitude, e.longitude)
     title = `M${e.magnitude?.toFixed(1)} ${e.suspicious ? "SHALLOW" : "Quake"}`
-    badge = `${e.depth?.toFixed(0)}km`
-    detail = `${country ? `${country} · ` : ""}${timeAgo(item.timestamp)} · ${e.place}`
+    badge = `${e.depth?.toFixed(0)}km deep`
+    time = timeAgo(item.timestamp)
   } else if (item.type === "gdelt") {
     const e = item.data
     country = getCountryName(e.latitude, e.longitude)
     title = "OSINT"
     badge = `${e.count} articles`
-    detail = `${country ? `${country} · ` : ""}${e.name}`
+    time = timeAgo(item.timestamp)
   } else {
     const a = item.data
     title = a.eventTypeName || a.eventType
     badge = a.alertLevel
-    detail = `${a.country ? `${a.country} · ` : ""}${a.title}`
+    country = a.country || ""
+    time = timeAgo(item.timestamp)
   }
 
   return (
     <button
-      className="w-full text-left rounded-md hover:bg-cyan-500/[0.04] transition-all duration-200 group flex items-stretch gap-0"
+      className="w-full text-left rounded-md hover:bg-cyan-500/[0.06] transition-all duration-200 group flex items-stretch gap-0"
       style={{ height: ITEM_HEIGHT }}
       onClick={handleClick}
     >
       {/* Left accent bar with glow */}
       <div
-        className={`w-0.5 rounded-full ${accent} opacity-30 group-hover:opacity-90 transition-all duration-200 my-1.5 ml-0.5 flex-shrink-0`}
-        style={{ boxShadow: `0 0 4px ${glowHex}00`, transition: "box-shadow 0.2s, opacity 0.2s" }}
-        onMouseEnter={(e) => { (e.target as HTMLElement).style.boxShadow = `0 0 6px ${glowHex}80` }}
-        onMouseLeave={(e) => { (e.target as HTMLElement).style.boxShadow = `0 0 4px ${glowHex}00` }}
+        className={`w-0.5 rounded-full ${accent} opacity-50 group-hover:opacity-100 transition-all duration-200 my-1.5 ml-0.5 flex-shrink-0`}
+        style={{ boxShadow: `0 0 4px ${glowHex}30` }}
       />
 
-      <div className="flex-1 min-w-0 px-2 py-1.5 flex flex-col justify-center">
+      <div className="flex-1 min-w-0 px-2 py-1 flex flex-col justify-center">
+        {/* Row 1: title + badge */}
         <div className="flex items-center gap-1.5">
-          <span className="text-[11px] font-mono font-medium truncate text-foreground/75">{title}</span>
-          <span className="text-[10px] font-mono tabular-nums text-muted-foreground/40 ml-auto flex-shrink-0">{badge}</span>
+          <span className="text-[11px] font-mono font-semibold truncate" style={{ color: glowHex }}>{title}</span>
+          <span className="text-[10px] font-mono tabular-nums text-foreground/50 ml-auto flex-shrink-0">{badge}</span>
         </div>
-        <p className="text-[9px] font-mono text-muted-foreground/30 mt-0.5 truncate">{detail}</p>
+        {/* Row 2: country */}
+        <p className="text-[10px] font-mono text-foreground/60 mt-0.5 truncate">
+          {country || `${pos.lat.toFixed(2)}, ${pos.lng.toFixed(2)}`}
+        </p>
+        {/* Row 3: time + distance */}
+        <div className="flex items-center gap-1.5 mt-0.5">
+          {time && <span className="text-[9px] font-mono text-foreground/35">{time}</span>}
+          {distLabel && <span className="text-[9px] font-mono text-cyan-400/40">{distLabel} away</span>}
+        </div>
       </div>
     </button>
   )

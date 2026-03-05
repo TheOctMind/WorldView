@@ -138,8 +138,8 @@ export async function GET(request: NextRequest) {
   const days = searchParams.get("days") || "2"
   const region = searchParams.get("region") || "world"
 
-  const mapKey = process.env.FIRMS_MAP_KEY
-  if (!mapKey) {
+  const mapKeys = [process.env.FIRMS_MAP_KEY, process.env.FIRMS_MAP_KEY_BACKUP].filter(Boolean) as string[]
+  if (mapKeys.length === 0) {
     return NextResponse.json({ error: "FIRMS_MAP_KEY not configured" }, { status: 500 })
   }
 
@@ -174,24 +174,31 @@ export async function GET(request: NextRequest) {
     const area = region === "world" ? "world" : region
     const sources = source === "all" ? ALL_SOURCES : [source]
 
-    // Fetch FIRMS CSV + NIFC backup in parallel
+    // Fetch FIRMS CSV with backup key fallback + NIFC in parallel
     const firmsFetches = sources.map(async (src) => {
-      const url = `https://firms.modaps.eosdis.nasa.gov/api/area/csv/${mapKey}/${src}/${area}/${days}`
-      const controller = new AbortController()
-      const timeout = setTimeout(() => controller.abort(), 30000)
-      const response = await fetch(url, { cache: "no-store", signal: controller.signal })
-      clearTimeout(timeout)
-      if (!response.ok) {
-        console.warn(`FIRMS ${src} returned ${response.status}`)
-        return { source: src, hotspots: [] as FirmsHotspot[] }
+      for (const key of mapKeys) {
+        try {
+          const url = `https://firms.modaps.eosdis.nasa.gov/api/area/csv/${key}/${src}/${area}/${days}`
+          const controller = new AbortController()
+          const timeout = setTimeout(() => controller.abort(), 30000)
+          const response = await fetch(url, { cache: "no-store", signal: controller.signal })
+          clearTimeout(timeout)
+          if (!response.ok) {
+            console.warn(`FIRMS ${src} returned ${response.status} with key ${key.slice(0, 6)}...`)
+            continue // try backup key
+          }
+          const csv = await response.text()
+          if (csv.startsWith("<!") || csv.startsWith("<html")) {
+            console.warn(`FIRMS ${src} returned HTML with key ${key.slice(0, 6)}...`)
+            continue // try backup key
+          }
+          return { source: src, hotspots: parseFireCSV(csv, src) }
+        } catch (err) {
+          console.warn(`FIRMS ${src} failed with key ${key.slice(0, 6)}...: ${err}`)
+          continue // try backup key
+        }
       }
-      const csv = await response.text()
-      // Verify we got CSV, not an HTML error page
-      if (csv.startsWith("<!") || csv.startsWith("<html")) {
-        console.warn(`FIRMS ${src} returned HTML instead of CSV`)
-        return { source: src, hotspots: [] as FirmsHotspot[] }
-      }
-      return { source: src, hotspots: parseFireCSV(csv, src) }
+      return { source: src, hotspots: [] as FirmsHotspot[] }
     })
 
     const nifcFetch = fetch(nifcUrl(parseInt(days)), { cache: "no-store" })
