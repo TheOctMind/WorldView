@@ -169,7 +169,7 @@ export default function EventDetailBar(props: EventDetailBarProps) {
 
           {/* Imagery date */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-[9px] font-mono text-foreground/30 uppercase tracking-wider">Imagery</span>
+            <span className="text-[9px] font-mono text-foreground/30 uppercase tracking-wider">Sentinel-2</span>
             {loadingImagery ? (
               <span className="text-[10px] font-mono text-foreground/30 animate-pulse">checking...</span>
             ) : imageryDate ? (
