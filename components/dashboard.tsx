@@ -10,6 +10,7 @@ import type { FirmsHotspot } from "@/lib/firms"
 import type { SeismicEvent } from "@/lib/seismic"
 import type { GdeltEvent } from "@/lib/gdelt"
 import type { GdacsAlert } from "@/lib/gdacs"
+import EventDetailBar from "@/components/event-detail-bar"
 
 const WorldMap = dynamic(() => import("@/components/map"), {
   ssr: false,
@@ -43,6 +44,8 @@ export default function Dashboard() {
   const [focusTarget, setFocusTarget] = useState<{ lat: number; lng: number } | null>(null)
   const [selectedHotspot, setSelectedHotspot] = useState<FirmsHotspot | null>(null)
   const [selectedSeismic, setSelectedSeismic] = useState<(SeismicEvent & { suspicious: boolean }) | null>(null)
+  const [selectedGdelt, setSelectedGdelt] = useState<GdeltEvent | null>(null)
+  const [selectedGdacs, setSelectedGdacs] = useState<GdacsAlert | null>(null)
   const [cameraCenter, setCameraCenter] = useState<{ lat: number; lng: number }>({ lat: 30, lng: 50 })
 
   useEffect(() => {
@@ -116,24 +119,32 @@ export default function Dashboard() {
   const handleSelectHotspot = useCallback((h: FirmsHotspot) => {
     setSelectedHotspot(h)
     setSelectedSeismic(null)
+    setSelectedGdelt(null)
+    setSelectedGdacs(null)
     setFocusTarget({ lat: h.latitude, lng: h.longitude })
   }, [])
 
   const handleSelectSeismic = useCallback((e: SeismicEvent & { suspicious: boolean }) => {
     setSelectedSeismic(e)
     setSelectedHotspot(null)
+    setSelectedGdelt(null)
+    setSelectedGdacs(null)
     setFocusTarget({ lat: e.latitude, lng: e.longitude })
   }, [])
 
   const handleSelectGdelt = useCallback((e: GdeltEvent) => {
     setSelectedHotspot(null)
     setSelectedSeismic(null)
+    setSelectedGdelt(e)
+    setSelectedGdacs(null)
     setFocusTarget({ lat: e.latitude, lng: e.longitude })
   }, [])
 
   const handleSelectGdacs = useCallback((a: GdacsAlert) => {
     setSelectedHotspot(null)
     setSelectedSeismic(null)
+    setSelectedGdelt(null)
+    setSelectedGdacs(a)
     setFocusTarget({ lat: a.latitude, lng: a.longitude })
   }, [])
 
@@ -187,6 +198,13 @@ export default function Dashboard() {
         <div className="absolute top-4 right-4 z-10">
           <ThemeToggle />
         </div>
+
+        <EventDetailBar
+          selectedHotspot={selectedHotspot}
+          selectedSeismic={selectedSeismic}
+          selectedGdelt={selectedGdelt}
+          selectedGdacs={selectedGdacs}
+        />
       </div>
     </div>
   )
